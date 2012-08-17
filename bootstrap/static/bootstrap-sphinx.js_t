@@ -1,0 +1,203 @@
+var sphinx = window.sphinx || {};
+sphinx['init'] = function($win, $nav, $subnav){
+  /**
+   * Walk the TOC allowing it to be modified based on where it's positioned or
+   * truncated according to maxLevel.
+   *
+   * @param $ul The toc to walk.
+   * @param visitor Optional function to execute on each item.
+   * @param maxLevel Optional max toc level, above which items will be removed.
+   */
+  sphinx['walkToc'] = function($ul, visitor, maxLevel) {
+    // Find all a "internal" tags, traversing recursively.
+    var findA = function($elem, l) {
+      var level = l || 0,
+        $items = $elem.find('> li > a.internal, > ul, > li > ul');
+
+      if (maxLevel >= 0 && level > maxLevel){
+        $elem.remove();
+        return;
+      }
+
+      // Iterate everything in order.
+      $items.each(function(index, item) {
+        var $item = $(item);
+        if (visitor) {
+          visitor($item, level);
+        }
+        if ($item.is('ul')) {
+          // Recurse.
+          findA($(item), level + 1);
+        }
+      });
+    };
+
+    findA($ul);
+  };
+
+  /**
+   * Mutate the underlying span to have a correct ul for nav.
+   *
+   * @param item: The current item being visited.
+   * @param level: The current level being visited.
+   */
+  sphinx['padNavToc'] = function($item, level){
+      var minLevel = 1;
+      var pad = 15 + ((level - minLevel) * 10);
+      if ($item.is('a') && level >= minLevel) {
+        // Add to existing padding.
+        $item.css('padding-left', pad + 'px');
+      }
+  };
+
+  sphinx['scrollToHash'] = function(hash){
+      var target = $(hash);
+      var offset = target.offset().top;
+      var navHeight = $nav.outerHeight();
+      console.log(offset, navHeight);
+      if (offset < navHeight){
+        setTimeout(function(){
+          $win.scrollTop($win.scrollTop() - (navHeight - offset));
+        }, 0);
+      } else if (offset > navHeight){
+        setTimeout(function(){
+          $win.scrollTop($win.scrollTop() + (offset - navHeight));
+        }, 0);
+      }
+  };
+
+  sphinx['absoluteOffsetTop'] = function($el){
+    var scrollTop = $win.scrollTop();
+    $win.scrollTop(0);
+    $subnav.removeClass('subnav-fixed');
+    var top = $el.offset().top;
+    $win.scrollTop(scrollTop);
+    return top;
+  };
+
+  {%- if theme_page_toc_position == 'subnav' %}
+  /* Most of this can be probably be removed once subnav support makes it into
+   bootstrap 2.1 */
+  sphinx['initSubNav'] = function(){
+    var $level0 = $subnav.find('> ul');
+    var $level1 = $level0.find('> li > ul');
+    if (!$level1.children().length){
+      $subnav.remove();
+      return;
+    }
+
+    $subnav.append($level1.addClass('nav nav-pills'));
+    $level0.remove();
+    $subnav.insertAfter('.content > .section > h1').css('visibility', 'visible');
+
+    sphinx.walkToc($level1, null, 0);
+
+    // fix sub nav on scroll
+    var navTop = sphinx.absoluteOffsetTop($subnav) - $nav.outerHeight();
+
+    function hoverscroll(){
+      var width = ($subnav.css('position') == 'fixed') ?
+        $('.body').width() : $subnav.width();
+      $level1.hoverscroll({
+        arrowOpacity: 0.3,
+        width: width,
+        height: $subnav.height()
+      });
+    }
+    $win.on('resize', function(){
+      navTop = sphinx.absoluteOffsetTop($subnav) - $nav.outerHeight();
+      $win.scroll();
+    });
+    $win.on('scroll', function(){
+      var scrollTop = $win.scrollTop();
+      if (scrollTop > navTop) {
+        $subnav.addClass('subnav-fixed');
+      } else {
+        $subnav.removeClass('subnav-fixed');
+      }
+      hoverscroll();
+    }).scroll();
+  };
+  {%- endif %}
+
+  sphinx['initHashLinks'] = function(){
+    // alter element ids so we can handle hash links ourselves accounting for
+    // fixed positioned nav elements.
+    $('.content *[id]').each(function(index, el){
+      var $el = $(el);
+      $el.attr('id', '_' + $el.attr('id'));
+    });
+    $('a[href^=#]').click(function(){
+      $win.hashchange();
+    });
+    $win.hashchange(function(){
+      $win = $(this);
+      if (location.hash){
+        var $target = $(location.hash.replace(/^#/, '#_'));
+        var margin = parseInt($target.css('margin-top').replace('px', ''), 10)
+        var padding = parseInt($target.css('padding-top').replace('px', ''), 10)
+        var spacing = (isNaN(margin) ? 0 : margin) + (isNaN(padding) ? 0 : padding);
+        var navOffset = -Math.max(spacing - 5, 5);
+        var firstSection = '.content > .section';
+        if ($target.is(firstSection) ||
+           ($target.is('span') && $target.parent().is(firstSection)))
+        {
+          $win.scrollTop(0);
+          return;
+        }
+
+        if ($nav.css('position') == 'fixed'){
+          navOffset = $nav.outerHeight() + navOffset;
+        }
+
+        {%- if theme_page_toc_position == 'subnav' %}
+        $subnav.addClass('subnav-fixed');
+        if ($subnav.css('position') == 'fixed'){
+          navOffset += $subnav.outerHeight();
+        }
+        {%- endif %}
+
+        $win.scrollTop($win.scrollTop() + $target.offset().top - navOffset);
+        {%- if theme_page_toc_position == 'subnav' %}
+        if ($subnav.css('position') == 'fixed'){
+          $win.scroll();
+        }
+        {%- endif %}
+      }
+    }).hashchange();
+  };
+
+  // Add styling, structure to TOC's.
+  $('.dropdown-menu').each(function() {
+    $(this).find('ul').each(function(index, item){
+      $(item).addClass('unstyled');
+    });
+    $(this).find('li').each(function() {
+      $(this).parent().append(this);
+    });
+  });
+
+  sphinx.walkToc($('.globaltoc > ul'), sphinx.padNavToc);
+
+  {%- if theme_page_toc_position == 'nav' %}
+  sphinx.walkToc($('.localtoc > ul'), sphinx.padNavToc, {{ theme_page_toc_maxdepth }});
+  {%- elif theme_page_toc_position == 'subnav' %}
+  sphinx.initSubNav();
+  {%- elif theme_page_toc_maxdepth|int %}
+  sphinx.walkToc($('.page-toc > ul'), null, {{ theme_page_toc_maxdepth }});
+  {%- endif %}
+
+  // Enable dropdown.
+  $('.dropdown-toggle').dropdown();
+
+  sphinx.initHashLinks();
+
+  // fix the navbar to the top w/ js so that if the js doesn't load, hash links
+  // aren't screwed.
+  $nav.addClass('navbar-fixed-top');
+  $('body').addClass('with-fixed-nav');
+};
+
+$(document).ready(function() {
+  sphinx.init($(window), $('#navbar'), $('.subnav'));
+});

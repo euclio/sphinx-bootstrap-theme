@@ -57,20 +57,54 @@ configuration
 
 Theme Notes
 ===========
+
 Sphinx
 ------
-The theme places the global TOC, local TOC, navigation (prev, next) and
+The theme places the global TOC, navigation (prev, next) and
 source links all in the top Bootstrap navigation bar, along with the Sphinx
 search bar on the left side.
 
+The location of the page local TOC is by default placed in a 'subnav' like the
+one found on `Bootstrap`_ documentation site. If there are too many items to
+fit within the width of the subnav, then the subnav will have a scroll on hover
+region on either side of the subnav. If you would like to have your page local
+TOC placed elsewhere, you can set `page_toc_position` in your
+`html_theme_options` in your sphinx `config.py` as described in the
+:ref:`configuration` section below.
+
 The global (site-wide) table of contents is the "Site" navigation dropdown,
 which is a multi-level deep rendering of the ``toctree`` for the entire site.
+
 The local (page-level) table of contents is the "Page" navigation dropdown,
 which is a multi-level rendering of the current page's ``toc``.
 
-Generally speaking, this is a quick and dirty hack to get the basic theme
-going, so there are likely some oversights and lurking issues. Help and
-bug filings for the project are most welcome.
+.. _configuration:
+
+Configuration
+-------------
+
+Sphinx allows you to specify theme specific options in your `config.py` by
+adding them to the `html_theme_options` variable:
+
+.. code:: python
+
+  html_theme_options = {
+    'page_toc_position': 'sidebar-left',
+  }
+
+This theme supports the following options:
+
+  **page_toc_position** (Default: subnav): Specifies where the page local TOC
+  will be rendered. Supported values include:
+
+     - **nav**: In the main navigation header next to the global site TOC.
+     - **subnav**: In a subnav bar.
+     - **sidebar-left**: In a sidebar to the left of the main page content.
+     - **sidebar-right**: In a sidebar to the right of the main page content.
+
+  **page_toc_maxdepth** (Default: -1): Allows you to limit the page local TOC
+  to the specified depth. When using the 'subnav' position the depth is
+  currently set to 1.
 
 
 Bootstrap

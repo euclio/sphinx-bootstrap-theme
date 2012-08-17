@@ -6,13 +6,108 @@
 */
 
 body {
-  padding-top: 52px;
+  padding-top: 0;
+}
+body.with-fixed-nav {
+  padding-top: 90px;
+}
+
+@media (max-width: 768px) {
+  /* Remove any padding from the body */
+  body.with-fixed-nav {
+    padding-top: 0;
+  }
+}
+@media (min-width: 768px) and (max-width: 980px) {
+  /* Remove any padding from the body */
+  body.with-fixed-nav {
+    padding-top: 0;
+  }
+}
+@media(max-width: 979px){
+  /* don't adding padding since it changes the height of navbar which can
+   * affect absolute elements (ex. github fork ribbon) */
+  .navbar-fixed-top .navbar-inner{
+    padding: 0;
+  }
 }
 
 .navbar .brand {
   color: #FFF;
+  float: left;
+  margin-left: 0;
+  margin-right: 10px;
   text-shadow: #777 2px 2px 3px;
 }
+
+/* align any plain text li elements in the navbar w/ nav links */
+.nav > li > .navbar-text {
+  display: block;
+  line-height: 19px;
+  padding: 9px 10px 11px;
+}
+
+.content > .section > h1 {
+  font-size: 50px;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.content > .section > p {
+  margin-top: 25px;
+}
+.content > .section > .section {
+  padding-top: 25px;
+}
+.content > .section > .section > h2 {
+  border-bottom: 1px solid #eee;
+  margin: 10px 0;
+  padding-bottom: 5px;
+}
+
+{%- if theme_page_toc_position == 'subnav' %}
+.subnav {
+  margin-top: 18px;
+  visibility: hidden;
+}
+.subnav .nav-pills {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.subnav .nav-pills > li {
+  display: table-cell;
+  float: none;
+}
+.subnav .hoverscroll {
+  margin: 0 auto;
+}
+.subnav-fixed .nav {
+  margin: 0;
+}
+@media (min-width: 980px) {
+  .subnav-fixed {
+    margin-top: 0;
+  }
+}
+@media (max-width: 768px) {
+  .subnav {
+    display: none;
+  }
+}
+{%- endif %}
+
+{%- if theme_page_toc_position.startswith('sidebar-') %}
+  .page-toc ul {
+    list-style: none;
+  }
+{%- endif %}
+
+{%- if theme_page_toc_position == 'sidebar-left' %}
+  /* if the side bar is on the left then it can overlap the content if the
+   * window is small enough, so make more room and set a min-width. */
+  .body.container-fluid {
+    padding-left: 5px;
+  }
+{%- endif %}
 
 {%- block sidebarlogo %}
   {%- if logo %}
