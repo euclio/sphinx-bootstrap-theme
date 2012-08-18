@@ -92,8 +92,10 @@ sphinx['init'] = function($win, $nav, $subnav){
 
     sphinx.walkToc($level1, null, 0);
 
-    // fix sub nav on scroll
-    var navTop = sphinx.absoluteOffsetTop($subnav) - $nav.outerHeight();
+    var navTop = 0;
+    function updateNavTop() {
+      navTop = sphinx.absoluteOffsetTop($subnav) - $nav.outerHeight();
+    }
 
     function hoverscroll(){
       var width = ($subnav.css('position') == 'fixed') ?
@@ -104,8 +106,9 @@ sphinx['init'] = function($win, $nav, $subnav){
         height: $subnav.height()
       });
     }
+    $win.on('load', updateNavTop);
     $win.on('resize', function(){
-      navTop = sphinx.absoluteOffsetTop($subnav) - $nav.outerHeight();
+      updateNavTop();
       $win.scroll();
     });
     $win.on('scroll', function(){
