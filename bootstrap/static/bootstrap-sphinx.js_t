@@ -50,22 +50,12 @@ sphinx['init'] = function($win, $nav, $subnav){
       }
   };
 
-  sphinx['scrollToHash'] = function(hash){
-      var target = $(hash);
-      var offset = target.offset().top;
-      var navHeight = $nav.outerHeight();
-      console.log(offset, navHeight);
-      if (offset < navHeight){
-        setTimeout(function(){
-          $win.scrollTop($win.scrollTop() - (navHeight - offset));
-        }, 0);
-      } else if (offset > navHeight){
-        setTimeout(function(){
-          $win.scrollTop($win.scrollTop() + (offset - navHeight));
-        }, 0);
-      }
-  };
-
+  /**
+   * Get the absolute top offset of the supplied element if the window was
+   * scrolled to the top of the document.
+   *
+   * @param $el The element to find the top offset of.
+   */
   sphinx['absoluteOffsetTop'] = function($el){
     var scrollTop = $win.scrollTop();
     $win.scrollTop(0);
@@ -76,8 +66,13 @@ sphinx['init'] = function($win, $nav, $subnav){
   };
 
   {%- if theme_page_toc_position == 'subnav' %}
-  /* Most of this can be probably be removed once subnav support makes it into
-   bootstrap 2.1 */
+  /**
+   * Initialize the subnav functionality, handling fixing it to the top when
+   * scrolling, dealing with overflow, etc.
+   *
+   * Boostrap 2.1 is suppose to have a subnav implementation, which hopefully
+   * will take care of most of this logic.
+   */
   sphinx['initSubNav'] = function(){
     var $level0 = $subnav.find('> ul');
     var $level1 = $level0.find('> li > ul');
@@ -130,6 +125,10 @@ sphinx['init'] = function($win, $nav, $subnav){
   };
   {%- endif %}
 
+  /**
+   * Initialize handling of hash links, and loading of a page linking to a
+   * hash, to account for fixed position header elements.
+   */
   sphinx['initHashLinks'] = function(){
     // alter element ids so we can handle hash links ourselves accounting for
     // fixed positioned nav elements.
