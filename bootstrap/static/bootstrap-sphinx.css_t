@@ -64,6 +64,18 @@ body.with-fixed-nav {
   padding-bottom: 5px;
 }
 
+.alert .alert-heading {
+  border-bottom: 1px solid #f6e5c4;
+  margin-bottom: 15px;
+  padding-bottom: 3px;
+}
+.alert-info .alert-heading {
+  border-bottom: 1px solid #addce6;
+}
+.alert-error .alert-heading {
+  border-bottom: 1px solid #eac5ca;
+}
+
 {%- if theme_page_toc_position == 'subnav' %}
 .subnav {
   margin-top: 18px;

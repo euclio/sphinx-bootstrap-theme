@@ -176,6 +176,21 @@ sphinx['init'] = function($win, $nav, $subnav){
     }).hashchange();
   };
 
+  /**
+   * Translate sphix style names to the corresponding bootstrap style name.
+   */
+  sphinx['bootstrapStyles'] = function(){
+    var styles = {
+      '.admonition-title': 'alert-heading',
+      '.admonition.note, .admonition.hint, .admonition.tip': 'alert alert-info',
+      '.admonition.warning, .admonition.attention, .admonition.caution, .admonition.important': 'alert',
+      '.admonition.error, .admonition.danger': 'alert alert-error',
+    };
+    for (var sphinxStyle in styles){
+      $(sphinxStyle).addClass(styles[sphinxStyle]);
+    }
+  };
+
   // Add styling, structure to TOC's.
   $('.dropdown-menu').each(function() {
     $(this).find('ul').each(function(index, item){
@@ -199,6 +214,7 @@ sphinx['init'] = function($win, $nav, $subnav){
   // Enable dropdown.
   $('.dropdown-toggle').dropdown();
 
+  sphinx.bootstrapStyles();
   sphinx.initHashLinks();
 
   // fix the navbar to the top w/ js so that if the js doesn't load, hash links
