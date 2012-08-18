@@ -106,15 +106,22 @@ sphinx['init'] = function($win, $nav, $subnav){
         height: $subnav.height()
       });
     }
-    $win.on('load', updateNavTop);
-    $win.on('resize', function(){
+    $win.on('load resize', function(){
       updateNavTop();
       $win.scroll();
     });
     $win.on('scroll', function(){
       var scrollTop = $win.scrollTop();
       if (scrollTop > navTop) {
-        $subnav.addClass('subnav-fixed');
+        if (!$subnav.hasClass('subnav-fixed')){
+          // account for the page not being long enough to make the subnav fixed
+          // without it immediately scrolling back and forcing back to static
+          // positioning.
+          var height = $(document).height() - navTop - $subnav.outerHeight(true);
+          if (height > $win.height()){
+            $subnav.addClass('subnav-fixed');
+          }
+        }
       } else {
         $subnav.removeClass('subnav-fixed');
       }
