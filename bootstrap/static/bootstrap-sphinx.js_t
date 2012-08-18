@@ -203,7 +203,7 @@ sphinx['init'] = function($win, $nav, $subnav){
     });
   });
 
-  sphinx.walkToc($('.globaltoc > ul'), sphinx.padNavToc);
+  sphinx.walkToc($('.globaltoc'), sphinx.padNavToc);
 
   {%- if theme_page_toc_position == 'nav' %}
   sphinx.walkToc($('.localtoc > ul'), sphinx.padNavToc, {{ theme_page_toc_maxdepth }});

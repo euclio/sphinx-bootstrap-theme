@@ -94,6 +94,9 @@ adding them to the `html_theme_options` variable:
 
 This theme supports the following options:
 
+  **global_toc_maxdepth** (Default: 1): Set the max number of levels to render
+  for the global TOC.
+
   **page_toc_position** (Default: subnav): Specifies where the page local TOC
   will be rendered. Supported values include:
 
