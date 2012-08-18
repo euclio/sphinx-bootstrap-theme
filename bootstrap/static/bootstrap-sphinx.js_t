@@ -152,6 +152,8 @@ sphinx['init'] = function($win, $nav, $subnav){
            ($target.is('span') && $target.parent().is(firstSection)))
         {
           $win.scrollTop(0);
+          // for android browsers
+          $win.load(function(){$win.scrollTop(0);});
           return;
         }
 
