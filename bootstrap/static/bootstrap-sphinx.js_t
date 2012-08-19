@@ -136,9 +136,6 @@ sphinx['init'] = function($win, $nav, $subnav){
       var $el = $(el);
       $el.attr('id', '_' + $el.attr('id'));
     });
-    $('a[href^=#]').click(function(){
-      $win.hashchange();
-    });
     $win.hashchange(function(){
       $win = $(this);
       if (location.hash){
@@ -169,6 +166,16 @@ sphinx['init'] = function($win, $nav, $subnav){
         {%- endif %}
 
         $win.scrollTop($win.scrollTop() + $target.offset().top - navOffset);
+        var $animate = $target;
+        if ($animate.is('.section')){
+          $animate = $animate.find('> h2');
+        } else if ($animate.is('ul')){
+          $animate = $animate.find('li:first-child :first-child');
+        }
+        console.log($animate);
+        $animate.animate({opacity: 0.4}, 1000, function(){
+          $animate.animate({opacity: 1}, 1000);
+        });
         {%- if theme_page_toc_position == 'subnav' %}
         if ($subnav.css('position') == 'fixed'){
           $win.scroll();
