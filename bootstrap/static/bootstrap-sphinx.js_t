@@ -140,10 +140,9 @@ sphinx['init'] = function($win, $nav, $subnav){
       $win = $(this);
       if (location.hash){
         var $target = $(location.hash.replace(/^#/, '#_'));
-        var margin = parseInt($target.css('margin-top').replace('px', ''), 10)
         var padding = parseInt($target.css('padding-top').replace('px', ''), 10)
-        var spacing = (isNaN(margin) ? 0 : margin) + (isNaN(padding) ? 0 : padding);
-        var navOffset = -Math.max(spacing - 5, 5);
+        var spacing = isNaN(padding) ? 0 : padding;
+        var navOffset = spacing > 10 ? -(spacing - 5) : 5;
         var firstSection = '.content > .section';
         if ($target.is(firstSection) ||
            ($target.is('span') && $target.parent().is(firstSection)))
@@ -160,7 +159,7 @@ sphinx['init'] = function($win, $nav, $subnav){
 
         {%- if theme_page_toc_position == 'subnav' %}
         $subnav.addClass('subnav-fixed');
-        if ($subnav.css('position') == 'fixed'){
+        if ($subnav.css('position') == 'fixed' && $subnav.is(':visible')){
           navOffset += $subnav.outerHeight();
         }
         {%- endif %}
@@ -223,13 +222,13 @@ sphinx['init'] = function($win, $nav, $subnav){
   // Enable dropdown.
   $('.dropdown-toggle').dropdown();
 
-  sphinx.bootstrapStyles();
-  sphinx.initHashLinks();
-
   // fix the navbar to the top w/ js so that if the js doesn't load, hash links
-  // aren't screwed.
+  // aren't screwed (must be before initHashLinks).
   $nav.addClass('navbar-fixed-top');
   $('body').addClass('with-fixed-nav');
+
+  sphinx.bootstrapStyles();
+  sphinx.initHashLinks();
 };
 
 $(document).ready(function() {
