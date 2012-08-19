@@ -55,6 +55,9 @@ body.with-fixed-nav {
 .content > .section > p {
   margin-top: 25px;
 }
+.content > .section > p.lead {
+  margin-top: 10px;
+}
 .content > .section > .section {
   padding-top: 25px;
 }

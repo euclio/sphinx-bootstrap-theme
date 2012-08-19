@@ -83,7 +83,12 @@ sphinx['init'] = function($win, $nav, $subnav){
 
     $subnav.append($level1.addClass('nav nav-pills'));
     $level0.remove();
-    $subnav.insertAfter('.content > .section > h1').css('visibility', 'visible');
+    var $after = $('.content > .section > h1');
+    var $lead = $after.siblings().first();
+    if ($lead.is('.lead')){
+      $after = $lead;
+    }
+    $subnav.insertAfter($after).css('visibility', 'visible');
 
     sphinx.walkToc($level1, null, 0);
 
