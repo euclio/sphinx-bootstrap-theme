@@ -202,6 +202,11 @@ sphinx['init'] = function($win, $nav, $subnav){
     for (var sphinxStyle in styles){
       $(sphinxStyle).addClass(styles[sphinxStyle]);
     }
+
+    // convert to inline code tags
+    $('span.pre').replaceWith(function(){
+      return $('<code/>').append($(this).contents());
+    });
   };
 
   // Add styling, structure to TOC's.
