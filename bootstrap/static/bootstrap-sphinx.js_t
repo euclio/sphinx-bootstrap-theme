@@ -204,8 +204,14 @@ sphinx['init'] = function($win, $nav, $subnav){
     }
 
     // convert to inline code tags
-    $('span.pre').replaceWith(function(){
-      return $('<code/>').append($(this).contents());
+    $('.docutils.literal').replaceWith(function(){
+      var $spans = $(this).children('span.pre');
+      if ($spans.length) {
+        return $('<code/>').append($spans.contents().map(function(){
+          return $(this).text();
+        }).toArray().join(' '));
+      }
+      return this;
     });
   };
 
