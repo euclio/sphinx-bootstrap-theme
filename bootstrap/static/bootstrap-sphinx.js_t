@@ -176,7 +176,6 @@ sphinx['init'] = function($win, $nav, $subnav){
         } else if ($animate.is('ul')){
           $animate = $animate.find('li:first-child :first-child');
         }
-        console.log($animate);
         $animate.animate({opacity: 0.4}, 1000, function(){
           $animate.animate({opacity: 1}, 1000);
         });
