@@ -67,6 +67,11 @@ body.with-fixed-nav {
   padding-bottom: 5px;
 }
 
+.section > h1 + .toctree-wrapper,
+.section > h1 + .subnav + .toctree-wrapper {
+  margin-top: 15px;
+}
+
 .alert .alert-heading {
   border-bottom: 1px solid #f6e5c4;
   margin-bottom: 15px;
