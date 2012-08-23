@@ -44,6 +44,12 @@ sphinx['init'] = function($win, $nav, $subnav){
   sphinx['initMenu'] = function($menu, maxdepth){
     var $toc = $menu.find('> ul').addClass('dropdown-menu');
     $menu.replaceWith($toc);
+
+    // convert sphinx 'current' to bootstrap 'active'
+    $toc.find('li.current').each(function(index, li){
+      $(li).addClass('active');
+    });
+
     sphinx.walkToc($toc, sphinx.initMenuItem, maxdepth);
   };
 
