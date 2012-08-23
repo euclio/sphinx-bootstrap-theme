@@ -111,7 +111,7 @@ sphinx['init'] = function($win, $nav, $subnav){
       updateNavTop();
       $win.scroll();
     });
-    $win.on('scroll', function(){
+    $win.on('hoverscroll scroll', function(){
       var scrollTop = $win.scrollTop();
       if (scrollTop > navTop) {
         if (!$subnav.hasClass('subnav-fixed')){
@@ -160,7 +160,7 @@ sphinx['init'] = function($win, $nav, $subnav){
         }
 
         if ($nav.css('position') == 'fixed'){
-          navOffset = $nav.outerHeight() + navOffset;
+          navOffset += $nav.outerHeight();
         }
 
         {%- if theme_page_toc_position == 'subnav' %}
@@ -215,6 +215,45 @@ sphinx['init'] = function($win, $nav, $subnav){
     });
   };
 
+  sphinx['scrollspy'] = function(){
+    $('.nav *[href^=#]').each(function(index, el){
+      var $el = $(el);
+      $el.attr('data-target', '#_' + $el.attr('href').replace('#', ''));
+    });
+
+    var navOffset = 10;
+    navOffset += $nav.outerHeight() * 2;
+    {%- if theme_page_toc_position == 'subnav' %}
+    navOffset += $subnav.outerHeight();
+    {%- endif %}
+    $('body').scrollspy({offset: navOffset});
+
+    {%- if theme_page_toc_position == 'subnav' %}
+    $('body').bind('activate', function(e){
+      var $target = $(e.target);
+      var $list = $subnav.find('.listcontainer');
+      var left = $target.position().left;
+      var right = left + $target.width();
+      var scroll = $list.scrollLeft();
+
+      if (right > ($list.width() - scroll)){
+        $list.scrollLeft(right);
+        $win.trigger('hoverscroll');
+      }else if (left < scroll){
+        $list.scrollLeft(left);
+        $win.trigger('hoverscroll');
+      }
+    });
+    $win.on('scroll', function(){
+      if($win.scrollTop() == 0){
+        $subnav.find('li.active').removeClass('active');
+        $subnav.find('.listcontainer').scrollLeft(0);
+        $win.trigger('hoverscroll');
+      }
+    });
+    {%- endif %}
+  };
+
   // Add styling, structure to TOC's.
   $('.dropdown-menu').each(function() {
     $(this).find('ul').each(function(index, item){
@@ -245,6 +284,7 @@ sphinx['init'] = function($win, $nav, $subnav){
 
   sphinx.bootstrapStyles();
   sphinx.initHashLinks();
+  sphinx.scrollspy();
 };
 
 $(document).ready(function() {
