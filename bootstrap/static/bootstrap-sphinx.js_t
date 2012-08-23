@@ -74,14 +74,15 @@ sphinx['init'] = function($win, $nav, $subnav){
    * will take care of most of this logic.
    */
   sphinx['initSubNav'] = function(){
-    var $level0 = $subnav.find('> ul');
+    var $subnav_inner = $subnav.find('.navbar-inner');
+    var $level0 = $subnav_inner.find('> ul');
     var $level1 = $level0.find('> li > ul');
     if (!$level1.children().length){
       $subnav.remove();
       return;
     }
 
-    $subnav.append($level1.addClass('nav nav-pills'));
+    $subnav.find('.navbar-inner').append($level1.addClass('nav'));
     $level0.remove();
     var $after = $('.content > .section > h1');
     var $lead = $after.siblings().first();
@@ -99,11 +100,11 @@ sphinx['init'] = function($win, $nav, $subnav){
 
     function hoverscroll(){
       var width = ($subnav.css('position') == 'fixed') ?
-        $('.body').width() : $subnav.width();
+        $('.body').width() : $subnav_inner.width();
       $level1.hoverscroll({
         arrowOpacity: 0.3,
         width: width,
-        height: $subnav.height()
+        height: $subnav_inner.height()
       });
     }
     $win.on('load resize', function(){

@@ -9,7 +9,7 @@ body {
   padding-top: 0;
 }
 body.with-fixed-nav {
-  padding-top: 90px;
+  padding-top: 75px;
 }
 
 @media (max-width: 768px) {
@@ -44,7 +44,7 @@ body.with-fixed-nav {
 .nav > li > .navbar-text {
   display: block;
   line-height: 19px;
-  padding: 9px 10px 11px;
+  padding: 10px;
 }
 
 .content > .section > h1 {
@@ -97,6 +97,9 @@ body.with-fixed-nav {
   display: table-cell;
   float: none;
 }
+.subnav .navbar-inner {
+  padding: 0;
+}
 .subnav .hoverscroll {
   margin: 0 auto;
 }
@@ -106,12 +109,43 @@ body.with-fixed-nav {
 @media (min-width: 980px) {
   .subnav-fixed {
     margin-top: 0;
+    position: fixed;
+    top: 40px;
+    left: 0;
+    right: 0;
+    z-index: 1020; /* 10 less than .navbar-fixed to prevent any overlap */
+    border-color: #d5d5d5;
+    border-width: 0 0 1px; /* drop the border on the fixed edges */
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+    -webkit-box-shadow: inset 0 1px 0 #fff, 0 1px 5px rgba(0,0,0,.1);
+       -moz-box-shadow: inset 0 1px 0 #fff, 0 1px 5px rgba(0,0,0,.1);
+            box-shadow: inset 0 1px 0 #fff, 0 1px 5px rgba(0,0,0,.1);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false); /* IE6-9 */
+  }
+  .subnav-fixed .nav {
+    width: 938px;
+    margin: 0 auto;
+    padding: 0 1px;
+  }
+  .subnav .nav > li:first-child > a,
+  .subnav .nav > li:first-child > a:hover {
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
   }
 }
 @media (max-width: 768px) {
   .subnav {
     display: none;
   }
+}
+@media (min-width: 1210px) {
+  .subnav-fixed .nav {
+    width: 1168px;
+  }
+
 }
 {%- endif %}
 

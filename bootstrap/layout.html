@@ -9,13 +9,12 @@
   '_static/jquery.hoverscroll.css',
   '_static/bootstrap.css',
   '_static/bootstrap-responsive.css',
-  '_static/bootstrap-docs.css',
   '_static/bootstrap-sphinx.css',
 ] + css_files %}
 
 {# Sidebar: Rework into our Boostrap nav section. #}
 {% macro navBar() %}
-  <div id="navbar" class="navbar">
+  <div id="navbar" class="navbar navbar-inverse">
     <div class="navbar-inner">
       <div class="container-fluid">
         <a class="brand" href="{{ pathto(master_doc) }}">{{ project|e }}</a>
@@ -67,8 +66,10 @@
     {%- endif %}
     <div class="content {% if sidebar %}span10{% endif %}">
       {%- if theme_page_toc_position == 'subnav' %}
-        <div class="subnav">
-          {{ toc }}
+        <div class="subnav navbar">
+          <div class="navbar-inner">
+            {{ toc }}
+          </div>
         </div>
       {%- endif %}
       {% block body %} {% endblock %}
