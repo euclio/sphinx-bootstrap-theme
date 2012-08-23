@@ -36,18 +36,32 @@ sphinx['init'] = function($win, $nav, $subnav){
   };
 
   /**
-   * Mutate the underlying span to have a correct ul for nav.
+   * Initialize top nav menu.
+   *
+   * @param $menu: The menu element.
+   * @param max_depth: Optional maxdepth of the menu.
+   */
+  sphinx['initMenu'] = function($menu, maxdepth){
+    var $toc = $menu.find('> ul').addClass('dropdown-menu');
+    $menu.replaceWith($toc);
+    sphinx.walkToc($toc, sphinx.initMenuItem, maxdepth);
+  };
+
+  /**
+   * Initialize menu items.
    *
    * @param item: The current item being visited.
    * @param level: The current level being visited.
    */
-  sphinx['padNavToc'] = function($item, level){
-      var minLevel = 1;
-      var pad = 15 + ((level - minLevel) * 10);
-      if ($item.is('a') && level >= minLevel) {
-        // Add to existing padding.
-        $item.css('padding-left', pad + 'px');
+  sphinx['initMenuItem'] = function($item, level){
+    if($item.is('ul')){
+      if($item.is('.simple') && $item.children().length === 0){
+        $item.remove();
+      }else{
+        $item.addClass('dropdown-menu');
+        $item.parent().addClass('dropdown-submenu');
       }
+    }
   };
 
   /**
@@ -251,23 +265,27 @@ sphinx['init'] = function($win, $nav, $subnav){
         $win.trigger('hoverscroll');
       }
     });
+    {%- elif theme_page_toc_position == 'nav' %}
+    $win.on('scroll', function(){
+      if($win.scrollTop() == 0){
+        $('#navbar .nav').find('li.active').removeClass('active');
+      }
+    });
     {%- endif %}
   };
 
-  // Add styling, structure to TOC's.
+  // Add structure to TOC's.
   $('.dropdown-menu').each(function() {
-    $(this).find('ul').each(function(index, item){
-      $(item).addClass('unstyled');
-    });
     $(this).find('li').each(function() {
       $(this).parent().append(this);
     });
   });
 
-  sphinx.walkToc($('.globaltoc'), sphinx.padNavToc);
-
+  sphinx.initMenu($('.globaltoc'));
   {%- if theme_page_toc_position == 'nav' %}
-  sphinx.walkToc($('.localtoc > ul'), sphinx.padNavToc, {{ theme_page_toc_maxdepth }});
+  var $toc = $('.localtoc > ul');
+  $toc.replaceWith($toc.find('li:first-child > ul'));
+  sphinx.initMenu($('.localtoc'), {{ theme_page_toc_maxdepth }});
   {%- elif theme_page_toc_position == 'subnav' %}
   sphinx.initSubNav();
   {%- elif theme_page_toc_maxdepth|int %}

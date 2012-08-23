@@ -47,6 +47,14 @@ body.with-fixed-nav {
   padding: 10px;
 }
 
+/* fix submenus greater than the second depth */
+.dropdown-submenu:hover .dropdown-menu {
+   display: none;
+}
+.dropdown-submenu:hover > .dropdown-menu {
+   display: block;
+}
+
 .content > .section > h1 {
   font-size: 50px;
   letter-spacing: -1px;
