@@ -92,6 +92,16 @@ footer {
   padding-bottom: 5px;
 }
 
+/* improve permalink position */
+a.headerlink {
+  margin-left: 5px;
+  position: relative;
+  top: -0.14em;
+}
+a.headerlink:hover {
+  text-decoration: none;
+}
+
 .section > h1 + .toctree-wrapper,
 .section > h1 + .subnav + .toctree-wrapper {
   margin-top: 15px;
