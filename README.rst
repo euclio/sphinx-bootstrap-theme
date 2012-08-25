@@ -10,9 +10,9 @@ as a Sphinx_ theme_. A live demo_ is available to preview the theme.
 .. _theme: http://sphinx.pocoo.org/theming.html
 .. _demo: http://ryan-roemer.github.com/sphinx-bootstrap-theme
 
-
 Installation
 ============
+
 To install the theme, download the theme directory and update your
 configuration
 
@@ -44,6 +44,7 @@ configuration
       sys.path.append(os.path.abspath('_themes'))
       html_theme_path = ['_themes']
       html_theme = 'bootstrap'
+      html_translator_class = 'bootstrap.HTMLTranslator'
 
       # (Optional) Use a shorter name to conserve nav. bar space.
       html_short_title = "Demo"
@@ -60,6 +61,7 @@ Theme Notes
 
 Sphinx
 ------
+
 The theme places the global TOC, navigation (prev, next) and
 source links all in the top Bootstrap navigation bar, along with the Sphinx
 search bar on the left side.
@@ -70,15 +72,13 @@ fit within the width of the subnav, then the subnav will have a scroll on hover
 region on either side of the subnav. If you would like to have your page local
 TOC placed elsewhere, you can set `page_toc_position` in your
 `html_theme_options` in your sphinx `config.py` as described in the
-:ref:`configuration` section below.
+configuration section below.
 
 The global (site-wide) table of contents is the "Site" navigation dropdown,
 which is a multi-level deep rendering of the ``toctree`` for the entire site.
 
 The local (page-level) table of contents is the "Page" navigation dropdown,
 which is a multi-level rendering of the current page's ``toc``.
-
-.. _configuration:
 
 Configuration
 -------------
@@ -94,30 +94,32 @@ adding them to the `html_theme_options` variable:
 
 This theme supports the following options:
 
-  **global_toc_maxdepth** (Default: 1): Set the max number of levels to render
-  for the global TOC.
+**global_toc_maxdepth** (Default: 1): Set the max number of levels to render
+for the global TOC.
 
-  **page_toc_position** (Default: subnav): Specifies where the page local TOC
-  will be rendered. Supported values include:
+**page_toc_position** (Default: subnav): Specifies where the page local TOC
+will be rendered. Supported values include:
 
-     - **nav**: In the main navigation header next to the global site TOC.
-     - **subnav**: In a subnav bar.
-     - **sidebar-left**: In a sidebar to the left of the main page content.
-     - **sidebar-right**: In a sidebar to the right of the main page content.
+- **nav**: In the main navigation header next to the global site TOC.
+- **subnav**: In a subnav bar.
+- **sidebar-left**: In a sidebar to the left of the main page content.
+- **sidebar-right**: In a sidebar to the right of the main page content.
 
-  **page_toc_maxdepth** (Default: -1): Allows you to limit the page local TOC
-  to the specified depth. When using the 'subnav' position the depth is
-  currently set to 1.
+**page_toc_maxdepth** (Default: -1): Allows you to limit the page local TOC
+to the specified depth. When using the 'subnav' position the depth is
+currently set to 1.
 
 
 Bootstrap
 ---------
-The theme uses Twitter Bootstrap v2.0. You can override any static JS/CSS files
-by dropping different versions in your Sphinx "_static" directory.
+
+The theme uses Twitter Bootstrap v2.1.0. You can override any static JS/CSS
+files by dropping different versions in your Sphinx "_static" directory.
 
 
 Licenses
 ========
+
 Sphinx Bootstrap Theme is licensed under the MIT_ license.
 
 Twitter Bootstrap is licensed under the Apache_ license.

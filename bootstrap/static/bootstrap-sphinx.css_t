@@ -9,7 +9,7 @@ body {
   padding-top: 0;
 }
 body.with-fixed-nav {
-  padding-top: 75px;
+  padding-top: 60px;
 }
 
 @media (max-width: 768px) {
@@ -30,6 +30,14 @@ body.with-fixed-nav {
   .navbar-fixed-top .navbar-inner{
     padding: 0;
   }
+}
+
+#navbar .navbar-inner {
+  border: none;
+  border-radius: 0;
+  height: 40px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .navbar .brand {
@@ -80,6 +88,10 @@ body.with-fixed-nav {
   margin-top: 15px;
 }
 
+.content .section img {
+  margin-bottom: 15px;
+}
+
 .alert .alert-heading {
   border-bottom: 1px solid #f6e5c4;
   margin-bottom: 15px;
@@ -95,7 +107,6 @@ body.with-fixed-nav {
 {%- if theme_page_toc_position == 'subnav' %}
 .subnav {
   margin-top: 18px;
-  visibility: hidden;
 }
 .subnav .nav-pills {
   overflow: hidden;
@@ -107,6 +118,11 @@ body.with-fixed-nav {
 }
 .subnav .navbar-inner {
   padding: 0;
+}
+.subnav .dropdown-toggle {
+  display: none;
+  margin-left: 8px;
+  line-height: 40px;
 }
 .subnav .hoverscroll {
   margin: 0 auto;
@@ -158,16 +174,32 @@ body.with-fixed-nav {
 {%- endif %}
 
 {%- if theme_page_toc_position.startswith('sidebar-') %}
-  .page-toc ul {
+  .page-sidebar {
+    max-width: 300px;
+  }
+  .page-sidebar .well {
+    padding: 10px 0;
+  }
+
+  .page-sidebar ul {
     list-style: none;
   }
-{%- endif %}
-
-{%- if theme_page_toc_position == 'sidebar-left' %}
-  /* if the side bar is on the left then it can overlap the content if the
-   * window is small enough, so make more room and set a min-width. */
-  .body.container-fluid {
-    padding-left: 5px;
+  .nav li > a {
+    display: block;
+  }
+  .nav-list li > a {
+    margin-right: -15px;
+    margin-left: -15px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  .nav-list li > a {
+    padding: 3px 15px;
+  }
+  .nav-list .active > a,
+  .nav-list .active > a:hover {
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+    background-color: #0088cc;
   }
 {%- endif %}
 
