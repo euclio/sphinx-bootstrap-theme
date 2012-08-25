@@ -100,13 +100,15 @@ sphinx['init'] = function($win, $nav, $subnav){
             var bot = top + $el.height();
             if (bot > $win.height()){
               var $parent = $el.parent();
+              var parenttop = menuTop($parent.parent());
               var botalign = -($el.height() - $parent.height());
-              if ((top + botalign) > 0){
+              if ((top + botalign + parenttop) > 0){
                 return botalign;
               }
-              var menutop = $parent.closest('.dropdown-menu').offset().top;
-              var parenttop = menuTop($parent);
-              return menutop - top + parenttop;
+              // the true top offset of the parent menu accounting for negative
+              // css offset
+              var menutop = $parent.closest('.dropdown-menu').offset().top + parenttop;
+              return menutop - top - parenttop;
             }
           }
           return 0;
