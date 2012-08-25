@@ -194,7 +194,7 @@ sphinx['init'] = function($win, $nav, $subnav){
     {%- if theme_page_toc_position == 'subnav' %}
     navOffset += $subnav.outerHeight() + $nav.outerHeight();
     {%- endif %}
-    $('body').scrollspy({offset: navOffset});
+    $('body').scrollspy({offset: navOffset, target: '.page-toc'});
 
     {%- if theme_page_toc_position == 'subnav' %}
     $('body').bind('activate', function(e){
@@ -224,7 +224,7 @@ sphinx['init'] = function($win, $nav, $subnav){
     $win.on('scroll', function(){
       if($win.scrollTop() == 0){
         $('body').data('scrollspy').activeTarget = null;
-        $('.nav').find('li.active').removeClass('active');
+        $('.page-toc').find('li.active').removeClass('active');
       }
     });
     {%- endif %}

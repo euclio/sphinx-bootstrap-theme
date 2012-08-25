@@ -122,6 +122,9 @@ class HTMLTranslator(SphinxHTMLTranslator):
           toc_list = node.children[0].children[1]
           toc_list.insert(0, page_node)
 
+          # required for target based scrollspy, but screws the styling.
+          #if self.toc_nav:
+          #  toc_list['classes'].append('nav')
           if self.toc_sidebar:
             toc_list['classes'].extend(['nav', 'nav-list'])
             page_node['classes'].append('nav-header')
@@ -140,7 +143,7 @@ class HTMLTranslator(SphinxHTMLTranslator):
     else:
       # continuation of visit_section handling of toc_subnav
       if not self.is_partial and self.toc_subnav and node is self.page_toc:
-        self.body.append(self.starttag({'classes': ['subnav', 'navbar']}, 'div'))
+        self.body.append(self.starttag({'classes': ['page-toc', 'subnav', 'navbar']}, 'div'))
         self.body.append(self.starttag({'classes': ['navbar-inner']}, 'div'))
         self.in_subnav = True
 
@@ -170,6 +173,7 @@ class HTMLTranslator(SphinxHTMLTranslator):
     # handle toc bullet list items
     if self.is_partial:
       classes = node.get('classes')
+
       # page toc is in the nav, so both are
       if self.toc_nav:
         children = node.children
@@ -178,7 +182,10 @@ class HTMLTranslator(SphinxHTMLTranslator):
             if self.bullet_list_is_global(node) or \
                self.page_toc_maxdepth < 0 or \
                self.bullet_list_depth(children[1]) <= self.page_toc_maxdepth:
-              classes.append('dropdown-submenu')
+              for child in children[1]:
+                if isinstance(child, nodes.list_item):
+                  classes.append('dropdown-submenu')
+                  break
 
       for classname in classes[:]:
         children = node.children
@@ -186,9 +193,10 @@ class HTMLTranslator(SphinxHTMLTranslator):
         if not self.toc_nav and classname.startswith('toctree-l') and len(children) > 1:
           if isinstance(children[1], nodes.bullet_list) and len(children[1]):
             classes.append('dropdown-submenu')
+
         # translate sphinx 'current' class to bootstrap's 'active'
-        elif classname == 'current':
-            classes.append('active')
+        if classname == 'current':
+          classes.append('active')
 
     # subnav bullet list items
     elif self.in_subnav:
