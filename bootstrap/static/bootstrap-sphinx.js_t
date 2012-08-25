@@ -242,7 +242,7 @@ sphinx['init'] = function($win, $nav, $subnav){
 
   // fix the navbar to the top w/ js so that if the js doesn't load, hash links
   // aren't screwed (must be before initHashLinks).
-  $nav.addClass('navbar-fixed-top');
+  $nav.addClass('navbar-fixed-top').removeClass('no-js');
   $('body').addClass('with-fixed-nav');
 
   sphinx.initHashLinks();

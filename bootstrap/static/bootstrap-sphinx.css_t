@@ -32,6 +32,10 @@ body.with-fixed-nav {
   }
 }
 
+footer {
+  margin-top: 50px;
+}
+
 #navbar .navbar-inner {
   border: none;
   border-radius: 0;
@@ -53,6 +57,11 @@ body.with-fixed-nav {
   display: block;
   line-height: 19px;
   padding: 10px;
+}
+
+/* default navbar dropdowns to work on hover if js doesn't load */
+#navbar.no-js .dropdown:hover > .dropdown-menu {
+  display: block;
 }
 
 /* fix submenus greater than the second depth */
