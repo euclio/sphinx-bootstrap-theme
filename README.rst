@@ -66,13 +66,12 @@ The theme places the global TOC, navigation (prev, next) and
 source links all in the top Bootstrap navigation bar, along with the Sphinx
 search bar on the left side.
 
-The location of the page local TOC is by default placed in a 'subnav' like the
-one found on `Bootstrap`_ documentation site. If there are too many items to
-fit within the width of the subnav, then the subnav will have a scroll on hover
-region on either side of the subnav. If you would like to have your page local
-TOC placed elsewhere, you can set `page_toc_position` in your
-`html_theme_options` in your sphinx `config.py` as described in the
-configuration section below.
+The location of the page local TOC is by default placed in a 'subnav' located
+just below the page heading. If there are too many items to fit within the
+width of the subnav, then the subnav will have a scroll on hover region on
+either side of the subnav. If you would like to have your page local TOC placed
+elsewhere, you can set `page_toc_position` in your `html_theme_options` in your
+sphinx `config.py` as described in the configuration section below.
 
 The global (site-wide) table of contents is the "Site" navigation dropdown,
 which is a multi-level deep rendering of the ``toctree`` for the entire site.
@@ -108,6 +107,16 @@ will be rendered. Supported values include:
 **page_toc_maxdepth** (Default: -1): Allows you to limit the page local TOC
 to the specified depth. When using the 'subnav' position the depth is
 currently set to 1.
+
+**sourcelink_position** (Default: nav): Specifies the location where the
+"Source" link, if enabled in your config.py, will be displayed. Supported
+values include:
+
+- **nav**: In the main navigation header after the other navigation links.
+- **footer**: In the page footer alongside the "Back To Top" link.
+
+**show_bootstrap** (Default: False): If true, a link to this theme will be
+place alongside the "Created using Sphinx" text in the footer.
 
 
 Bootstrap
