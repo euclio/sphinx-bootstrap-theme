@@ -8,7 +8,7 @@ as a Sphinx_ theme_. A live demo_ is available to preview the theme.
 .. _Bootstrap: http://twitter.github.com/bootstrap/
 .. _Sphinx: http://sphinx.pocoo.org/
 .. _theme: http://sphinx.pocoo.org/theming.html
-.. _demo: http://ryan-roemer.github.com/sphinx-bootstrap-theme
+.. _demo: http://ervandew.github.com/sphinx-bootstrap-theme
 
 Installation
 ============
@@ -17,27 +17,8 @@ To install the theme, download the theme directory and update your
 configuration
 
 1. Create a "_themes" directory in your project source root.
-2. Get the "bootstrap" themes either as raw files or as a zipfile from
-   the repository.
-
-   a. Most current way is to just clone this repo or download the full
-      repo source and move the "bootstrap" directory to "_themes".
-   b. Alternatively, there are some prepackaged theme zip files (containing
-      only the theme files), which can be read directly by Sphinx. See the
-      repo downloads_ page for available packages. Then download
-      "bootstrap.zip"::
-
-        $ cd /path/to/_themes
-        $ wget https://github.com/downloads/ryan-roemer/sphinx-bootstrap-theme/bootstrap.zip
-
-      In addition to the "current" release, the GitHub zipfiles have either git
-      hash releases (for development builds) or tags for official tagged
-      releases. E.g.::
-
-        bootstrap.zip
-        bootstrap-v0.0.2.zip
-        bootstrap-f51d73491e9bae68eb1b1c57059d9e0ece03d125.zip
-
+2. Get the "bootstrap" themes by cloning this repo or download the full repo
+   source and move the "bootstrap" directory to "_themes".
 3. Edit your configuration file to point to the bootstrap theme::
 
       # Activate the theme.
@@ -53,8 +34,6 @@ configuration
       # Path should be relative to the html_static_path setting (e.g.,
       # "_static") in source.
       html_logo = "my_logo.png"
-
-.. _downloads: https://github.com/ryan-roemer/sphinx-bootstrap-theme/downloads
 
 Theme Notes
 ===========
@@ -133,5 +112,5 @@ Sphinx Bootstrap Theme is licensed under the MIT_ license.
 
 Twitter Bootstrap is licensed under the Apache_ license.
 
-.. _MIT: https://github.com/ryan-roemer/sphinx-bootstrap-theme/blob/master/LICENSE.txt
+.. _MIT: https://github.com/ervandew/sphinx-bootstrap-theme/blob/master/LICENSE.txt
 .. _Apache: https://github.com/twitter/bootstrap/blob/master/LICENSE
