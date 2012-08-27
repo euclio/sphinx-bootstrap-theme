@@ -8,7 +8,7 @@ minimal working Sphinx site using the theme.
 Please see the :doc:`README` page (also linked below in the TOC) for full
 details and installation instructions.
 
-.. _`Sphinx Bootstrap Theme`: https://github.com/ryan-roemer/sphinx-bootstrap-theme
+.. _`Sphinx Bootstrap Theme`: https://github.com/ervandew/sphinx-bootstrap-theme
 
 Contents
 ========
