@@ -1,18 +1,19 @@
 var sphinx = window.sphinx || {};
 sphinx['init'] = function($win, $nav, $subnav){
   /**
-   * Get the absolute top offset of the supplied element if the window was
-   * scrolled to the top of the document.
-   *
-   * @param $el The element to find the top offset of.
+   * Get the absolute position of the supplied element within the document,
+   * regardless of scroll offsets.
    */
-  sphinx['absoluteOffsetTop'] = function($el){
-    var scrollTop = $win.scrollTop();
-    $win.scrollTop(0);
-    $subnav.removeClass('subnav-fixed');
-    var top = $el.offset().top;
-    $win.scrollTop(scrollTop);
-    return top;
+  sphinx['absolutePosition'] = function (el) {
+    var curleft = 0, curtop = 0;
+    if (el.offsetParent) {
+      do {
+        curleft += el.offsetLeft;
+        curtop += el.offsetTop;
+      } while (el = el.offsetParent);
+      return {left: curleft, top: curtop};
+    }
+    return {left: 0, top: 0};
   };
 
   {%- if theme_page_toc_position == 'subnav' %}
@@ -25,17 +26,31 @@ sphinx['init'] = function($win, $nav, $subnav){
       return;
     }
 
-    var $subnav_inner = $subnav.find('.navbar-inner');
-    var $list = $subnav_inner.find('> ul');
-    var navTop = 0;
-
     // disable until it can be fixed to work w/ hoverscroll
     /*$subnav.find('.dropdown-toggle').show().click(function(e){
       e.stopPropagation();
       $(this).closest('li').toggleClass('open');
     });*/
 
+    function afix(){
+      $subnav.addClass('subnav-fixed');
+      if ($subnav.css('position') == 'fixed'){
+        if (!$subnav.siblings('.subnav-placeholder').length){
+          var $placeholder = $('<div class="subnav-placeholder navbar"></div>');
+          $placeholder.height($subnav.outerHeight());
+          $subnav.before($placeholder);
+        }
+      }
+    }
+
+    function unafix(){
+      $subnav.siblings('.subnav-placeholder').remove();
+      $subnav.removeClass('subnav-fixed');
+    }
+
     function hoverscroll(){
+      var $subnav_inner = $subnav.find('.navbar-inner');
+      var $list = $subnav_inner.find('ul').first();
       var width = ($subnav.css('position') == 'fixed') ?
         $('.body').width() : $subnav_inner.width();
       $list.hoverscroll({
@@ -44,9 +59,15 @@ sphinx['init'] = function($win, $nav, $subnav){
         height: $subnav_inner.height()
       });
     }
-    $win.on('load resize', function(){
-      navTop = sphinx.absoluteOffsetTop($subnav) - $nav.outerHeight();
+
+    var navTop = 0;
+    $win.on('load resize', function(e){
+      var offset = sphinx.absolutePosition($('.subnav-placeholder').get(0) || $subnav.get(0));
+      navTop = offset.top - $nav.outerHeight();
       $win.scroll();
+      if (e.type == 'load'){
+        $win.hashchange();
+      }
     });
     $win.on('hoverscroll scroll', function(){
       var scrollTop = $win.scrollTop();
@@ -57,18 +78,11 @@ sphinx['init'] = function($win, $nav, $subnav){
           // positioning.
           var height = $(document).height() - navTop - $subnav.outerHeight(true);
           if (height > $win.height()){
-            var $placeholder = $('<div class="subnav-placeholder"></div>');
-            $subnav.addClass('subnav-fixed');
-
-            if ($subnav.css('position') == 'fixed'){
-              $placeholder.height($subnav.outerHeight());
-              $subnav.before($placeholder);
-            }
+            afix();
           }
         }
-      } else {
-        $subnav.siblings('.subnav-placeholder').remove();
-        $subnav.removeClass('subnav-fixed');
+      } else if ($subnav.hasClass('subnav-fixed')){
+        unafix();
       }
       hoverscroll();
     }).scroll();
@@ -132,16 +146,12 @@ sphinx['init'] = function($win, $nav, $subnav){
    * hash, to account for fixed position header elements.
    */
   sphinx['initHashLinks'] = function(){
-    // alter element ids so we can handle hash links ourselves accounting for
-    // fixed positioned nav elements.
-    $('.content *[id]').each(function(index, el){
-      var $el = $(el);
-      $el.attr('id', '_' + $el.attr('id'));
-    });
     $win.hashchange(function(){
-      $win = $(this);
       if (location.hash){
         var $target = $(location.hash.replace(/^#/, '#_'));
+        if (/^_id\d+$/.test($target.attr('id')) && !$target.is('.section')){
+          $target = $target.parent('[id]');
+        }
         var padding = parseInt($target.css('padding-top').replace('px', ''), 10)
         var spacing = isNaN(padding) ? 0 : padding;
         var navOffset = spacing > 10 ? -(spacing - 5) : 5;
@@ -160,13 +170,19 @@ sphinx['init'] = function($win, $nav, $subnav){
         }
 
         {%- if theme_page_toc_position == 'subnav' %}
-        $subnav.addClass('subnav-fixed');
-        if ($subnav.css('position') == 'fixed' && $subnav.is(':visible')){
-          navOffset += $subnav.outerHeight();
+        var $placeholder = $subnav.siblings('.subnav-placeholder');
+        if ($placeholder.length){
+          navOffset += $placeholder.outerHeight();
+        }else{
+          $subnav.addClass('subnav-fixed');
+          if ($subnav.css('position') == 'fixed'){
+            navOffset += $subnav.outerHeight();
+          }
+          $subnav.removeClass('subnav-fixed');
         }
         {%- endif %}
 
-        $win.scrollTop($win.scrollTop() + $target.offset().top - navOffset);
+        $win.scrollTop(sphinx.absolutePosition($target.get(0)).top - navOffset);
         var $animate = $target;
         if ($animate.is('.section')){
           $animate = $animate.find('> h2');
@@ -185,59 +201,54 @@ sphinx['init'] = function($win, $nav, $subnav){
     }).hashchange();
   };
 
-  sphinx['scrollspy'] = function(){
-    $('.nav *[href^=#]').each(function(index, el){
-      var $el = $(el);
-      $el.attr('data-target', '#_' + $el.attr('href').replace('#', ''));
-    });
-
+  sphinx['initScrollspy'] = function(){
     var navOffset = 10;
     navOffset += $nav.outerHeight();
     {%- if theme_page_toc_position == 'subnav' %}
-    navOffset += $subnav.outerHeight() + $nav.outerHeight();
+    navOffset += $subnav.outerHeight();
     {%- endif %}
-    $('body').scrollspy({offset: navOffset, target: '.page-toc'});
 
-    {%- if theme_page_toc_position == 'subnav' %}
-    $('body').bind('activate', function(e){
-      var $target = $(e.target);
-      var $list = $subnav.find('.listcontainer');
-      var left = $target.position().left;
-      var right = left + $target.width();
-      var scroll = $list.scrollLeft();
+    // wait on all other events
+    setTimeout(function(){
+      $('body').scrollspy({offset: navOffset, target: '.page-toc'});
+      $win.on('load resize', function(){
+        $('body').scrollspy('refresh');
+      });
 
-      if (right > ($list.width() - scroll)){
-        $list.scrollLeft(right);
-        $win.trigger('hoverscroll');
-      }else if (left < scroll){
-        $list.scrollLeft(left);
-        $win.trigger('hoverscroll');
-      }
-    });
-    $win.on('scroll', function(){
-      if($win.scrollTop() == 0){
-        $('body').data('scrollspy').activeTarget = null;
-        $subnav.find('li.active').removeClass('active');
-        $subnav.find('.listcontainer').scrollLeft(0);
-        $win.trigger('hoverscroll');
-      }
-    });
-    {%- else %}
-    $win.on('scroll', function(){
-      if($win.scrollTop() == 0){
-        $('body').data('scrollspy').activeTarget = null;
-        $('.page-toc').find('li.active').removeClass('active');
-      }
-    });
-    {%- endif %}
+      {%- if theme_page_toc_position == 'subnav' %}
+      $('body').bind('activate', function(e){
+        var $target = $(e.target);
+        var $list = $subnav.find('.listcontainer');
+        var left = $target.position().left;
+        var right = left + $target.width();
+        var scroll = $list.scrollLeft();
+
+        if (right > ($list.width() - scroll)){
+          $list.scrollLeft(right);
+          $win.trigger('hoverscroll');
+        }else if (left < scroll){
+          $list.scrollLeft(left);
+          $win.trigger('hoverscroll');
+        }
+      });
+      $win.on('scroll', function(){
+        if($win.scrollTop() == 0){
+          $('body').data('scrollspy').activeTarget = null;
+          $subnav.find('li.active').removeClass('active');
+          $subnav.find('.listcontainer').scrollLeft(0);
+          $win.trigger('hoverscroll');
+        }
+      });
+      {%- else %}
+      $win.on('scroll', function(){
+        if($win.scrollTop() == 0){
+          $('body').data('scrollspy').activeTarget = null;
+          $('.page-toc').find('li.active').removeClass('active');
+        }
+      });
+      {%- endif %}
+    }, 0);
   };
-
-  sphinx.initTopNav();
-  {%- if theme_page_toc_position == 'subnav' %}
-  sphinx.initSubNav();
-  {%- elif theme_page_toc_position.startswith('sidebar-') %}
-  sphinx.initSideNav();
-  {%- endif %}
 
   // Enable dropdown.
   $('.dropdown-toggle').dropdown();
@@ -247,8 +258,33 @@ sphinx['init'] = function($win, $nav, $subnav){
   $nav.addClass('navbar-fixed-top').removeClass('no-js');
   $('body').addClass('with-fixed-nav');
 
+  // alter element ids so we can handle hash links ourselves accounting for
+  // fixed positioned nav elements.
+  $('.content *[id]').each(function(index, el){
+    var $el = $(el);
+    $el.attr('id', '_' + $el.attr('id'));
+  });
+  // update nav links accordingly for scrollspy
+  $('.nav *[href^=#]').each(function(index, el){
+    var $el = $(el);
+    $el.attr('data-target', '#_' + $el.attr('href').replace('#', ''));
+    $el.click(function(){
+      // force a hashchange if the hash is already set to the href
+      if (location.hash == $(this).attr('href')){
+        $win.hashchange();
+      }
+    });
+  });
+
+  sphinx.initTopNav();
+  {%- if theme_page_toc_position == 'subnav' %}
+  sphinx.initSubNav();
+  {%- elif theme_page_toc_position.startswith('sidebar-') %}
+  sphinx.initSideNav();
+  {%- endif %}
+
   sphinx.initHashLinks();
-  sphinx.scrollspy();
+  sphinx.initScrollspy();
 };
 
 $(document).ready(function() {
