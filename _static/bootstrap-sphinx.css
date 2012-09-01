@@ -136,6 +136,13 @@ a.headerlink:hover {
 .subnav .navbar-inner {
   padding: 0;
 }
+.subnav .navbar-inner ul.nav {
+  white-space: nowrap;
+}
+.subnav .navbar-inner ul.nav li {
+  display: inline-block;
+  float: none;
+}
 .subnav .dropdown-toggle {
   display: none;
   margin-left: 8px;
