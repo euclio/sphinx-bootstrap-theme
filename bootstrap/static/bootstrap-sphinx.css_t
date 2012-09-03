@@ -123,6 +123,12 @@ a.headerlink:hover {
   border-bottom: 1px solid #eac5ca;
 }
 
+/* disable bootstrap's word wrapping in pre blocks */
+pre {
+  word-wrap: normal;
+  white-space: pre;
+}
+
 {%- if theme_page_toc_position == 'subnav' %}
 .subnav {
   margin-top: 18px;
