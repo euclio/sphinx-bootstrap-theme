@@ -75,6 +75,10 @@ This theme supports the following options:
 **global_toc_maxdepth** (Default: 1): Set the max number of levels to render
 for the global TOC.
 
+**global_toc_name** (Default: Site): Set the text used for the global toc
+found in the header. Note: this value is also used as the key for translations
+of the text.
+
 **page_toc_position** (Default: subnav): Specifies where the page local TOC
 will be rendered. Supported values include:
 
