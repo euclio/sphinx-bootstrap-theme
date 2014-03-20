@@ -49,8 +49,8 @@ The location of the page local TOC is by default placed in a 'subnav' located
 just below the page heading. If there are too many items to fit within the
 width of the subnav, then the subnav will have a scroll on hover region on
 either side of the subnav. If you would like to have your page local TOC placed
-elsewhere, you can set `page_toc_position` in your `html_theme_options` in your
-sphinx `config.py` as described in the configuration section below.
+elsewhere, you can set ``page_toc_position`` in your ``html_theme_options`` in
+your sphinx ``config.py`` as described in the configuration section below.
 
 The global (site-wide) table of contents is the "Site" navigation dropdown,
 which is a multi-level deep rendering of the ``toctree`` for the entire site.
@@ -61,8 +61,8 @@ which is a multi-level rendering of the current page's ``toc``.
 Configuration
 -------------
 
-Sphinx allows you to specify theme specific options in your `config.py` by
-adding them to the `html_theme_options` variable:
+Sphinx allows you to specify theme specific options in your ``config.py`` by
+adding them to the ``html_theme_options`` variable:
 
 .. code:: python
 
@@ -73,7 +73,11 @@ adding them to the `html_theme_options` variable:
 This theme supports the following options:
 
 **global_toc_maxdepth** (Default: 1): Set the max number of levels to render
-for the global TOC.
+for the global table of contents.
+
+**global_toc_includehidden** (Default: True): When True, include hidden toc
+entries (those using the ``:hidden:`` directive) in the global table of
+contents.
 
 **global_toc_name** (Default: Site): Set the text used for the global toc
 found in the header. Note: this value is also used as the key for translations
