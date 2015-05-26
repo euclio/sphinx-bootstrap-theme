@@ -30,10 +30,14 @@ class HTMLTranslator(SphinxHTMLTranslator):
 
     self.in_subnav = False
     if not self.is_partial and self.toc_subnav:
+      if isinstance(self.builder.config.source_suffix, (list, tuple)):
+        source_suffix = self.builder.config.source_suffix[0]
+      else:
+        source_suffix = self.builder.config.source_suffix
       docname = os.path.relpath(
         node['source'],
         self.builder.env.srcdir
-      ).replace(self.builder.config.source_suffix, '')
+      ).replace(source_suffix, '')
       self.page_toc = self.builder.env.get_toc_for(docname, self.builder)
 
       toc_empty = bool(
